@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useContext, useState } from 'react'
 import bg from "../assets/bg-2.jpg"
 import { IoEyeSharp } from "react-icons/io5";
@@ -76,8 +77,21 @@ function Signup() {
           Already have an account? <span className='text-blue-400 cursor-pointer' >Login</span>
         </p>
       </form>
+=======
+import React from 'react'
+import bg from "../assets/bg-2.jpg"
+function signup() {
+  return (
+    <div className='w-full h-[100vh] bg-cover flex justify-center items-center' style={{backgroundImage:`url(${bg})`}}>
+    <form className='w-[90%] h-[600px] max-w-[500px] bg-[#00000096] backdrop-blur-md[shadow-1g shadow-blue-950 ]'>
+    </form>
+>>>>>>> 2ba6c5aca6c41a8eb9b2df402efbde95c935150c
     </div>
   )
 }
 
+<<<<<<< HEAD
 export default Signup
+=======
+export default signup
+>>>>>>> 2ba6c5aca6c41a8eb9b2df402efbde95c935150c

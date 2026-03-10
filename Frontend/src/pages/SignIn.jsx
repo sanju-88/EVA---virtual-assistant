@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useContext, useState } from 'react'
 import bg from "../assets/bg-2.jpg"
 import { IoEyeSharp } from "react-icons/io5";
@@ -74,8 +75,20 @@ function Signin() {
           Don't have an account? <span className='text-blue-400 cursor-pointer'>Sign up</span>
         </p>
       </form>
+=======
+import React from 'react'
+
+function Signin() {
+  return (
+    <div>
+      Signin page
+>>>>>>> 2ba6c5aca6c41a8eb9b2df402efbde95c935150c
     </div>
   )
 }
 
+<<<<<<< HEAD
 export default Signin
+=======
+export default Signin
+>>>>>>> 2ba6c5aca6c41a8eb9b2df402efbde95c935150c
