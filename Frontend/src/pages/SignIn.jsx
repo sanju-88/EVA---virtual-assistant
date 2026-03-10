@@ -13,24 +13,27 @@ function Signin() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const[loading,setLoading] = useState(false);
   const [err, setErr] = useState("");
 
   const handleSignin = async (e) => {
     e.preventDefault();
-    console.log("Signin clicked");
     setErr("");
+    setLoading(true);
     try {
       let result = await axios.post(`${serverUrl}/api/auth/login`, { email, password }, { withCredentials: true });
       console.log(result);
+    setLoading(false);
+
       navigate("/");
     } catch (error) {
-      console.error("Error during signin:", error);
-      if (error.response) {
-        setErr(error.response?.data?.message);
-      } else {
-        setErr("Server not responding");
-      }
-    }
+  if (error.response) {
+    setLoading(false);
+    setErr(error.response.data.message);
+  } else {
+    setErr("Server not responding");
+  }
+}
   }
   return (
     <div className='w-full h-[100vh] bg-cover flex justify-center items-center' style={{ backgroundImage: `url(${bg})` }}>
@@ -63,8 +66,8 @@ function Signin() {
         </div>
 
         {err && <p className='text-red-700 text-[14px]'>{err}</p>}
-        <button className='min-w-[150px] h-[60px] mt-[30px] bg-white text-black font-semibold rounded-full text-[18px] hover:bg-blue-600 transition duration-300'>
-          Sign In
+        <button className='min-w-[150px] h-[60px] mt-[30px] bg-white text-black font-semibold rounded-full text-[18px] hover:bg-blue-600 transition duration-300' disabled={loading}>
+         { loading ? "Signing In..." : "Sign In" }
         </button>
 
         <p className='text-white text-[16px]' onClick={() => navigate("/signup")}>

@@ -14,20 +14,23 @@ function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
 
   const handleSignup = async (e) => {
     e.preventDefault();
     console.log("Signup clicked");
     setErr("");
+    setLoading(true);
     try {
       let result = await axios.post(`${serverUrl}/api/auth/signup`, { name, email, password }, { withCredentials: true });
       console.log(result);
+      setLoading(false);
       navigate("/signin");
     } catch (error) {
-      console.error("Error during signup:", error);
       if (error.response) {
-        setErr(error.response?.data?.message);
+        setErr(error.response.data.message);
+        setLoading(false);
       } else {
         setErr("Server not responding");
       }
@@ -65,8 +68,8 @@ function Signup() {
         </div>
 
         {err.length > 0 && <p className='text-red-700 text-[14px]'>{err}</p>}
-        <button className='min-w-[150px] h-[60px] mt-[30px] bg-white text-black font-semibold rounded-full text-[18px] hover:bg-blue-600 transition duration-300'>
-          Sign Up
+        <button className='min-w-[150px] h-[60px] mt-[30px] bg-white text-black font-semibold rounded-full text-[18px] hover:bg-blue-600 transition duration-300'  disabled={loading}>
+          {loading ? "Signing Up..." : "Sign Up"}
         </button>
 
         <p className='text-white text-[16px]' onClick={() => navigate("/signin")}>
