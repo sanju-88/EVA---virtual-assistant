@@ -5,43 +5,41 @@ import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 
 function Customize2() {
-  const { userData, backendImage, selectedImage, serverUrl, setUserData } = useContext(UserDataContext);
+  const { userData, backendImage, selectedImage, serverUrl, setUserData } =
+    useContext(UserDataContext);
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
 
   const [assistantName, setAssistantName] = useState(
-    userData?.assistantName || "");
+    userData?.assistantName || "",
+  );
 
   const handleUpdateAssistant = async () => {
-  try {
     setLoading(true);
+    try {
+      const formdata = new FormData();
+      formdata.append("assistantName", assistantName);
+      if (backendImage) {
+        formdata.append("assistantImage", backendImage);
+      } else {
+        formdata.append("imageUrl", selectedImage);
+      }
 
-    const formdata = new FormData();
-    formdata.append("assistantName", assistantName);
-
-    if (backendImage) {
-      formdata.append("assistantImage", backendImage);
-    } else {
-      formdata.append("imageUrl", selectedImage);
-    }
-
-    const result = await axios.post(
-      `${serverUrl}/api/user/update`,
-      formdata,
-      { withCredentials: true }
-    );
-
-    console.log(result.data);
-    setUserData(result.data);
-    navigate("/");
-  } catch (error) {
-    console.log(error.response?.data);
-    console.error("Error updating assistant:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+      const result = await axios.post(
+        `${serverUrl}/api/user/update`,
+        formdata,
+        { withCredentials: true },
+      );
+      setLoading(false);
+      console.log(result.data);
+      setUserData(result.data);
+      navigate("/");
+    } catch (error) {
+      setLoading(false);
+      console.error("Error updating assistant:", error);
+    } 
+  };
 
   return (
     <div className="w-full h-[100vh] bg-gradient-to-t from-black to-[#030353] flex justify-center items-center flex-col">
@@ -64,12 +62,12 @@ function Customize2() {
 
       {assistantName && (
         <button
-  className="min-w-[300px] h-[40px] mt-[30px] bg-white text-black font-semibold rounded-full text-[18px] hover:bg-blue-600 hover:text-white transition duration-300 cursor-pointer"
-  disabled={loading}
-  onClick={handleUpdateAssistant}
->
-  {loading ? "Loading..." : "Finally create your assistant..."}
-</button>
+          className="min-w-[300px] h-[40px] mt-[30px] bg-white text-black font-semibold rounded-full text-[18px] hover:bg-blue-600 hover:text-white transition duration-300 cursor-pointer"
+          disabled={loading}
+          onClick={handleUpdateAssistant}
+        >
+          {!loading ? "Finally create your assistant..." : "Loading..."}
+        </button>
       )}
     </div>
   );

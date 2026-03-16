@@ -25,14 +25,14 @@ function Home() {
     <div className="w-full h-[100vh] bg-gradient-to-t from-black to-[#020236] flex justify-center items-center flex-col gap-[15px] relative">
 
       <button
-        className="min-w-[150px] h-[60px] mt-[30px] bg-white text-black font-bold rounded-full text-[18px] hover:bg-blue-600 transition duration-300 absolute top-[20px] right-[20px] px-[20px] py-[10px]"
+        className="min-w-[150px] h-[60px] mt-[30px] bg-white text-black font-bold rounded-full text-[18px] hover:bg-blue-600 transition duration-300 absolute hover:text-white top-[20px] right-[20px] px-[20px] py-[10px] curson-pointer"
         onClick={() => navigate("/customize")}
       >
         Customize your assistant
       </button>
 
       <button
-        className="min-w-[150px] h-[60px] mt-[30px] bg-white text-black font-bold rounded-full text-[18px] hover:bg-blue-600 transition duration-300 absolute top-[100px] right-[20px] px-[20px] py-[10px]"
+        className="min-w-[150px] h-[60px] mt-[30px] bg-white text-black font-bold rounded-full text-[18px] hover:bg-blue-600 transition duration-300 hover:text-white absolute top-[100px] right-[20px] px-[20px] py-[10px] curson-pointer"
         onClick={handleLogout}
       >
         Logout
