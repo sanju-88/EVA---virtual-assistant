@@ -62,7 +62,10 @@ function Customize2() {
 
       {assistantName && (
         <button
-          className="min-w-[300px] h-[40px] mt-[30px] bg-white text-black font-semibold rounded-full text-[18px] hover:bg-blue-600 hover:text-white transition duration-300 cursor-pointer"
+          className="min-w-[150px] h-[55px] mt-[30px]  px-[20px] hover:bg-white hover:text-blue-600 font-medium rounded-full text-[16px] 
+bg-blue-700 text-white
+shadow-md shadow-blue-500/20 
+transition-all duration-500 cursor-pointer"
           disabled={loading}
           onClick={handleUpdateAssistant}
         >

@@ -1,25 +1,14 @@
-import { v2 as cloudinary } from "cloudinary";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
+import axios from "axios";
 
 const test = async () => {
-  try {
-    const result = await cloudinary.uploader.upload(
-      "https://res.cloudinary.com/demo/image/upload/sample.jpg"
-    );
+  const res = await axios.post(
+    "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyCmiePiCXtjZ51aqpUYVk9afVfmnZpc9rQ",
+    {
+      contents: [{ parts: [{ text: "hello" }] }]
+    }
+  );
 
-    console.log("UPLOAD SUCCESS:", result.secure_url);
-
-  } catch (error) {
-    console.log("CLOUDINARY ERROR:", error);
-  }
+  console.log(res.data);
 };
 
 test();

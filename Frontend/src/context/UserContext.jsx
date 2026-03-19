@@ -1,7 +1,8 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 export const UserDataContext = createContext();
+
 
 function UserContext({ children }) {
   const serverUrl = "http://localhost:8000";
@@ -12,16 +13,40 @@ function UserContext({ children }) {
 
   const handleCurrentUser = async () => {
     try {
-      const result = await axios.get(`${serverUrl}/api/user/current`,{ withCredentials: true }
-      );
+      const result = await axios.get(`${serverUrl}/api/user/current`, {
+        withCredentials: true,
+      });
 
       setUserData(result.data);
       console.log("Current user data:", result.data);
-
     } catch (error) {
       console.log("Error fetching current user data:", error);
     }
   };
+  
+const getGeminiResponse = async (command) => {
+  try {
+    const result = await axios.post(
+      `${serverUrl}/api/user/asktoassistant`,
+      { command },
+      { withCredentials: true }
+    );
+
+    return result.data;
+  } catch (error) {
+    console.error("FULL ERROR:", error);
+
+    if (error.response) {
+      console.error("BACKEND ERROR:", error.response.data);
+    }
+
+    return {
+      type: "general",
+      userInput: command,
+      response: error.response?.data?.message || "Backend not responding",
+    };
+  }
+};
 
   useEffect(() => {
     handleCurrentUser();
@@ -36,7 +61,8 @@ function UserContext({ children }) {
     frontendImage,
     setFrontendImage,
     selectedImage,
-    setSelectedImage
+    setSelectedImage,
+    getGeminiResponse,
   };
 
   return (

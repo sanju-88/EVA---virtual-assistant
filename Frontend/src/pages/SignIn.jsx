@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import bg from "../assets/bg-2.jpg";
+import bg from "../assets/bg.png";
 import { IoEyeSharp } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import axios from "axios";
 
 function Signin() {
   const [showPassword, setShowPassword] = useState(false);
-  const { serverUrl,userData, setUserData } = useContext(UserDataContext);
+  const { serverUrl, userData, setUserData } = useContext(UserDataContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,40 +16,44 @@ function Signin() {
   const [err, setErr] = useState("");
 
   const handleSignin = async (e) => {
-  e.preventDefault();
-  setErr("");
-  setLoading(true);
+    e.preventDefault();
+    setErr("");
+    setLoading(true);
 
-  try {
-    const result = await axios.post(
-      `${serverUrl}/api/auth/signin`,
-      { email, password },
-      { withCredentials: true }
-    );
+    try {
+      const result = await axios.post(
+        `${serverUrl}/api/auth/signin`,
+        { email, password },
+        { withCredentials: true },
+      );
 
-    setUserData(result.data);
+      setUserData(result.data);
 
-    setLoading(false);
-    navigate("/");
+      setLoading(false);
+      navigate("/");
+    } catch (error) {
+      setUserData(null);
+      setLoading(false);
 
-  } catch (error) {
-    setUserData(null);
-    setLoading(false);
-
-    if (error.response) {
-      setErr(error.response.data.message);
-    } else {
-      setErr("Server not responding");
+      if (error.response) {
+        setErr(error.response.data.message);
+      } else {
+        setErr("Server not responding");
+      }
     }
-  }
-};
+  };
   return (
     <div
       className="w-full h-[100vh] bg-cover flex justify-center items-center"
       style={{ backgroundImage: `url(${bg})` }}
     >
       <form
-        className="w-[90%] h-[600px] max-w-[500px] bg-[#00000066] backdrop-blur-md shadow-lg shadow-black flex flex-col items-center justify-center gap-[20px] rounded-lg px-[30px]"
+        className="w-[90%] h-[580px] max-w-[500px] 
+bg-white/5 backdrop-blur-sm 
+border border-white/10 
+shadow-[0_8px_40px_rgba(0,0,0,0.6)] 
+flex flex-col items-center justify-center gap-[22px] 
+rounded-2xl px-[32px]"
         onSubmit={handleSignin}
       >
         <h1 className="text-3xl text-white font-semibold text-center mt-10 mb-[30px]">
@@ -92,7 +96,11 @@ function Signin() {
 
         {err && <p className="text-red-700 text-[14px]">{err}</p>}
         <button
-          className="min-w-[150px] h-[60px] mt-[30px] bg-white text-black font-semibold rounded-full text-[18px] hover:bg-blue-600 transition duration-300"
+          className="min-w-[150px] h-[55px] mt-[30px] 
+hover:bg-white hover:text-blue-600 font-medium rounded-full text-[16px] 
+bg-blue-700 text-white
+shadow-md shadow-blue-500/20 
+transition-all duration-500 cursor-pointer"
           disabled={loading}
         >
           {loading ? "Signing In..." : "Sign In"}
@@ -103,7 +111,7 @@ function Signin() {
           onClick={() => navigate("/signup")}
         >
           Don't have an account?{" "}
-          <span className="text-blue-400 cursor-pointer">Sign up</span>
+          <span className="text-blue-300 hover:text-white hover:underline cursor-pointer">Sign up</span>
         </p>
       </form>
     </div>

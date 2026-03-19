@@ -1,10 +1,11 @@
 import User from "../models/user.model.js";
 import uploadOnCloudinary from "../config/cloudinary.js";
-import moment  from "moment";
+import moment from "moment";
+import geminiResponse from "../gemini.js";
+import { json, response } from "express";
 
 export const getCurrentUser = async (req, res) => {
   try {
-    const userId = req.userId;
     const user = await User.findById(req.userId).select("-password");
 
     if (!user) {
@@ -26,74 +27,96 @@ export const updateAssistant = async (req, res) => {
     if (req.file) {
       const cloudinaryResult = await uploadOnCloudinary(req.file.buffer);
       assistantImage = cloudinaryResult.secure_url;
-      console.log("FILE:", req.file);
-console.log("BODY:", req.body);
     } else {
       assistantImage = imageUrl;
     }
 
     const updatedUser = await User.findByIdAndUpdate(
       req.userId,
-      {
-        assistantName,
-        assistantImage
-      },
-      { returnDocument: "after" }
+      { assistantName, assistantImage },
+      { returnDocument: "after" },
     ).select("-password");
 
     return res.status(200).json(updatedUser);
-
   } catch (error) {
     console.error("UPDATE ASSISTANT ERROR:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-
 export const askToAssistant = async (req, res) => {
   try {
-    const { command } = req.body;
     const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(400).json({ response: "User not found" });
+    }
     const userName = user.name;
     const assistantName = user.assistantName;
+    const { command } = req.body;
+
+    console.log("🧠 Command:", command);
 
     const result = await geminiResponse(command, assistantName, userName);
 
-    const jsonMatch = result.match(/{[\s\S]*}/);
-    if (!jsonMatch) {
-      return res.status(400).json({response: "Sorry, I couldn't understand that. Could you please rephrase?"});
+    let gemResult;
+
+    try {
+      const jsonMatch = result.match(/\{[\s\S]*\}/)?.[0];
+
+      if (!jsonMatch) {
+        throw new Error("No JSON found");
+      }
+
+      gemResult = JSON.parse(jsonMatch);
+    } catch (err) {
+      console.error("❌ JSON Parse Error:", err);
+      return res.json({
+        type: "general",
+        userInput: command,
+        response: "Sorry, I didn't understand that.",
+      });
     }
 
-    const genResult = JSON.parse(jsonMatch[0]);
-    const type = genResult.type;
+    const type = gemResult.type;
+
+    console.log("🤖 Gemini result:", result);
+
+    if (!gemResult || !gemResult.type) {
+      return res.json({
+        type: "general",
+        userInput: command,
+        response: "I couldn't understand that",
+      });
+    }
 
     switch (type) {
+      case "get_time":
+        return res.json({
+          type,
+          userInput: gemResult.userInput,
+          response: `The current time is ${moment().format("hh:mm A")}`,
+        });
+
       case "get_date":
         return res.json({
           type,
-          userInput: genResult.userInput, 
-          response: `Today's date is:  ${moment().format("MMMM Do YYYY")}`});
-        break;
-
-      case "get_time":
-         return res.json({
-          type,
-          userInput: genResult.userInput, 
-          response: `The current time is:  ${moment().format("hh:mm A")}`});
-        break;
+          userInput: gemResult.userInput,
+          response: `Today's date is ${moment().format("MMMM Do YYYY")}`,
+        });
 
       case "get_day":
-          return res.json({
-            type,
-            userInput: genResult.userInput, 
-            response: `Today is:  ${moment().format("dddd")}`});
-          break;
+        return res.json({
+          type,
+          userInput: gemResult.userInput,
+          response: `Today is ${moment().format("dddd")}`,
+        });
+
       case "get_month":
-            return res.json({
-              type,
-              userInput: genResult.userInput, 
-              response: `This month is:  ${moment().format("MMMM")}`});
-            break;    
+        return res.json({
+          type,
+          userInput: gemResult.userInput,
+          response: `This month is ${moment().format("MMMM")}`,
+        });
 
       case "google_search":
       case "wikipedia_search":
@@ -108,18 +131,23 @@ export const askToAssistant = async (req, res) => {
       case "facebook_open":
       case "linkedin_open":
       case "github_open":
-      case "email_open":    
-           return res.json({
-            type,
-            userInput: genResult.userInput, 
-            response: genResult.response
-           }); 
-      default:
-        return res.status(400).json({response: "Sorry, I couldn't understand that command."});
-    }
+      case "email_open":
+        return res.json({
+          type,
+          userInput: gemResult.userInput,
+          response: gemResult.response,
+        });
 
+      default:
+        return res
+          .status(400)
+          .json({ response: "I didn't understand that command." });
+    }
   } catch (error) {
-    console.error("Error asking to assistant:", error);
-    return res.status(500).json({response: "Sorry, I encountered an error. Please try again."});
+    console.error(
+      "FULL ERROR:",
+      error.response?.data || error.message || error,
+    );
+    return res.status(500).json({ response: "Ask assistant error." });
   }
-}
+};

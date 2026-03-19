@@ -2,14 +2,12 @@ import { useContext, useRef } from "react";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import Card from "../Components/Card.jsx";
 import image1 from "../assets/image1.png";
-import image2 from "../assets/image2.png";
-import image3 from "../assets/image3.png";
 import image4 from "../assets/image4.png";
 import image5 from "../assets/image5.png";
 import image6 from "../assets/image6.png";
 import image9 from "../assets/image9.png";
 import image8 from "../assets/image8.png";
-import image7 from "../assets/image7.png";
+import image7 from "../assets/image7.jpeg";
 import { useNavigate } from "react-router-dom";
 import { UserDataContext } from "../context/UserContext.jsx";
 import { IoIosArrowBack } from "react-icons/io";
@@ -50,13 +48,11 @@ function Customize() {
       <h1 className="border-2 py-[5px] px-[20px] border-[#03037bba] rounded-xl text-white text-[20px] lg:text-[30px] mb-[40px] text-center ">
         Select your <span className="text-[#9c9cfe]">Assistant</span>
       </h1>
-      <div className="w-[90%] max-w-[72%] flex justify-center items-center flex-wrap gap-[15px]">
+      <div className="w-[60%] max-w-[72%] flex justify-center items-center flex-wrap gap-[15px]">
         <Card image={image1} />
         <Card image={image8} />
-        <Card image={image3} />
-        <Card image={image4} />
-        <Card image={image2} />
         <Card image={image5} />
+        <Card image={image4} />
         <Card image={image7} />
         <Card image={image6} />
         <Card image={image9} />
@@ -95,7 +91,11 @@ function Customize() {
       </div>
       {selectedImage && (
         <button
-          className="min-w-[120px] h-[40px] mt-[30px] bg-white text-black font-semibold rounded-full text-[18px] hover:bg-blue-600 hover:text-white transition duration-300 cursor-pointer"
+           className="min-w-[150px] h-[55px] mt-[30px] 
+hover:bg-white hover:text-blue-600 font-medium rounded-full text-[16px] 
+bg-blue-700 text-white
+shadow-md shadow-blue-500/20 
+transition-all duration-500 cursor-pointer"
           onClick={() => navigate("/customize2")}
         >
           Next
