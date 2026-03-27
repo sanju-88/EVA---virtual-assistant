@@ -5,7 +5,7 @@ export const UserDataContext = createContext();
 
 
 function UserContext({ children }) {
-  const serverUrl = "https://virtual-assistant-backend-dezu.onrender.com";
+  const serverUrl = "https://assistant-backend-e4k9.onrender.com";
   const [userData, setUserData] = useState(null);
   const [frontendImage, setFrontendImage] = useState(null);
   const [backendImage, setBackendImage] = useState(null);
