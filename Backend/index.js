@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000
 
 app.use(express.json())
 app.use(cors({
-    origin: "https://virtual-assistant-z7wu.onrender.com",
+    origin: "https://aivirtual-assistant.onrender.com",
     credentials: true
 }))
 app.use(cookieParser())
